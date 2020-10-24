@@ -1,17 +1,17 @@
 const collegeBoardConfig = {
     'scoredwnldHost': 'scoresdownload.collegeboard.org',
     'scoredwnldPort': '443',
-    'username': 'username',
-    'password': 'password'
+    'username': process.env.CB_USER_NAME,
+    'password': process.env.CB_PASSWORD
 };
 
 const sftpConfig = {
-    'host': 'host',
-    'username': 'username',
-    'password': 'password',
+    'host': process.env.SFTP_HOST,
+    'username': process.env.SFTP_USER_NAME,
+    'password': process.env.SFTP_PASSWORD,
     'port': 22,
     'readyTimeout': 50000,
-    'remotePath': 'path'
+    'remotePath': process.env.SFTP_PATH
 };
 
 exports.collegeBoardConfig = collegeBoardConfig;

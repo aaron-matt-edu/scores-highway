@@ -18,8 +18,21 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
     git clone https://github.com/aaron-matt-edu/scores-highway.git
     ```
 
-1. Update the `sftpConfig` object in `config.js` with the info for your target SFTP server.
-1. Update the `collegeBoardConfig` object in `config.js` with your Collegeboard credentials.
+1. Update the the following environment variables in the AWS Lambda function with info for your target SFTP server.
+
+    ```none
+    SFTP_HOST
+    SFTP_USER_NAME
+    SFTP_PASSWORD
+    SFTP_PATH
+    ```
+
+1. Update the the following environment variables in the AWS Lambda function with info with your Collegeboard credentials.
+
+    ```none
+    CB_USER_NAME
+    CB_PASSWORD
+    ```
 
 1. Create AWS Lambda function ZIP file.
 
