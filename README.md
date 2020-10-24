@@ -18,10 +18,11 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
     git clone https://github.com/aaron-matt-edu/scores-highway.git
     ```
 
-1. Update the `connSettings` object with the info for your target SFTP server.
-1. Update the `initConfig` object with your Collegeboard credentials.
+1. Update the `sftpConfig` object in `config.js` with the info for your target SFTP server.
+1. Update the `collegeBoardConfig` object in `config.js` with your Collegeboard credentials.
 
 1. Create AWS Lambda function ZIP file.
+
     ```bash
     npm run clean && npm install && npm run package
     ```
@@ -30,6 +31,7 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
 1. Under the "Basic settings" section of the AWS Lambda function, set the timeout to 10 minutes.
 1. Under the "Configuration" section of the AWS Lambda function, choose "Add Trigger" & create an EventBridge (CloudWatch events) trigger with the following CRON schedule: `cron(0 H * * ? *)` where H is the hour of the day you'd like this function to run daily (UTC time, 24-hour format).
 1. Under the "Permissions" section of the AWS Lambda function, update the function's execution role to add this statement:
+
     ```javascript
     "Statement": [
     {
