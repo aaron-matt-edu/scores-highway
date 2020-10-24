@@ -4,7 +4,7 @@ This is a [NodeJS](https://nodejs.org/en/download/) AWS Lambda function that [do
 
 ## Credits
 
-This function was adapted from a script originally developed by [Tim Heuer](theuer@luc.edu) (773.508.3254) of Loyola University Chicago, circa March 31, 2017.
+This function was adapted from a script originally developed by [Tim Heuer](mailto:theuer@luc.edu) (773.508.3254) of Loyola University Chicago, circa March 31, 2017.
 
 ## Installation instructions
 
