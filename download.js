@@ -33,7 +33,7 @@ function formattedDateFromOneDayAgo() {
     return formattedDate;
 }
 
-function getDownloadUrl(fileName) {
+exports.getDownloadUrl = function(fileName) {
     return new Promise(function(resolve, reject) {
         const logger = new Logger('getDownloadUrl');
         const options = collegeBoardOptionsFor('/pascoredwnld/file?filename=' + fileName);
@@ -72,7 +72,7 @@ function getDownloadUrl(fileName) {
     });
 }
 
-function downloadToLocal(url, filePath) {
+exports.downloadToLocal = function(url, filePath) {
     return new Promise(function(resolve, reject) {
         const logger = new Logger('downloadToLocal');
         const request = https.get(url, function(response) {
@@ -102,7 +102,7 @@ function downloadToLocal(url, filePath) {
     });
 }
 
-function getFileNamesToDownload() {
+exports.getFileNamesToDownload = function() {
     return new Promise(function(resolve, reject) {
         const logger = new Logger('getDownloadUrl');
         let fileNames = [];
@@ -144,6 +144,3 @@ function getFileNamesToDownload() {
     });
 }
 
-exports.getFileNamesToDownload = getFileNamesToDownload;
-exports.downloadToLocal = downloadToLocal;
-exports.getDownloadUrl = getDownloadUrl;

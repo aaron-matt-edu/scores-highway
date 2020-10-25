@@ -2,7 +2,7 @@ const Logger = require('./logger').Logger;
 const uploadFunctions = require('./upload');
 const downloadFunctions = require('./download');
 
-async function lambdaHandler(event, context, callback) {
+exports.handler = async function(event, context, callback) {
     const logger = new Logger('lambdaHandler');
 
     const fileNames = await downloadFunctions.getFileNamesToDownload();
@@ -29,9 +29,9 @@ async function lambdaHandler(event, context, callback) {
         await uploadFunctions.upload(localFile);
     }
 
+    logger.info('Successfully uploaded ' + localFiles.length + ' files');
+
     return {
         'message': 'Successfully uploaded ' + localFiles.length + ' files'
     };
 }
-
-exports.handler = lambdaHandler;

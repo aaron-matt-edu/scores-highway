@@ -1,4 +1,4 @@
-class Logger {
+exports.Logger = class {
     constructor(name) {
         this.name = name;
     }
@@ -19,5 +19,3 @@ class Logger {
         this.log('ERROR', msg);
     }
 }
-
-exports.Logger = Logger;

@@ -2,7 +2,7 @@ const SftpClient = require('ssh2-sftp-client');
 const config = require('./config');
 const Logger = require('./logger').Logger;
 
-function upload(fileToUpload) {
+exports.upload = function(fileToUpload) {
     const logger = new Logger('upload');
     const sftp = new SftpClient();
     const fileParts = fileToUpload.split('/');
@@ -20,5 +20,3 @@ function upload(fileToUpload) {
             logger.error(err.message);
         });
 }
-
-exports.upload = upload;
