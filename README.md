@@ -9,55 +9,73 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
 ## Installation instructions
 
 1. Create an AWS account.
-1. [Create an AWS Lambda function with a static IP address](https://medium.com/@karan.brar/aws-lambda-with-static-ip-address-c82e3043c2ed).
+1. [Create an AWS VPC with a static public IP address](https://medium.com/@karan.brar/aws-lambda-with-static-ip-address-c82e3043c2ed) (follow the linked guide except for the part that creates the AWS Lambda function).
 1. Add the IP address to the whitelist for the SFTP server.
-1. Install NodeJS.
+1. Install NodeJS, [serverless](https://serverless.com), & the [AWS CLI](https://aws.amazon.com/cli/). When setting up the AWS CLI, if using a region other than `us-east-2`, then you'll need to update the `region` in `serverless.yml` as well as elsewhere in this guide.
 1. Clone this repository.
 
     ```bash
     git clone https://github.com/aaron-matt-edu/scores-highway.git
     ```
 
-1. Update the the following environment variables in the AWS Lambda function with info for your target SFTP server.
+1. Create an AWS IAM role with the following policy with the following replacements:
 
-    ```none
-    SFTP_HOST
-    SFTP_USER_NAME
-    SFTP_PASSWORD
-    SFTP_PATH
-    ```
-
-1. Update the the following environment variables in the AWS Lambda function with info with your Collegeboard credentials.
-
-    ```none
-    CB_USER_NAME
-    CB_PASSWORD
-    ```
-
-1. Create AWS Lambda function ZIP file.
-
-    ```bash
-    npm run clean && npm install && npm run package
-    ```
-
-1. Under the "Function code" section of the AWS Lambda function, choose Actions -> Upload ZIP file. Upload `bin/scores-highway.zip`.
-1. Under the "Basic settings" section of the AWS Lambda function, set the timeout to 10 minutes.
-1. Under the "Configuration" section of the AWS Lambda function, choose "Add Trigger" & create an EventBridge (CloudWatch events) trigger with the following CRON schedule: `cron(0 H * * ? *)` where H is the hour of the day you'd like this function to run daily (UTC time, 24-hour format).
-1. Under the "Permissions" section of the AWS Lambda function, update the function's execution role to add this statement:
+    * `<AWS account number>` with your AWS account number
 
     ```javascript
-    "Statement": [
     {
-        "Effect": "Allow",
-        "Action": [
-            "ec2:DescribeNetworkInterfaces",
-            "ec2:CreateNetworkInterface",
-            "ec2:DeleteNetworkInterface",
-            "ec2:DescribeInstances",
-            "ec2:AttachNetworkInterface"
-        ],
-        "Resource": "*"
-    },
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "ec2:DescribeNetworkInterfaces",
+                    "ec2:CreateNetworkInterface",
+                    "ec2:DeleteNetworkInterface",
+                    "ec2:DescribeInstances",
+                    "ec2:AttachNetworkInterface"
+                ],
+                "Resource": "*"
+            },
+            {
+                "Sid": "VisualEditor1",
+                "Effect": "Allow",
+                "Action": "logs:CreateLogGroup",
+                "Resource": "arn:aws:logs:us-east-2:<AWS account number>:*"
+            },
+            {
+                "Sid": "VisualEditor2",
+                "Effect": "Allow",
+                "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                ],
+                "Resource": "arn:aws:logs:us-east-2:<AWS account number>:log-group:/aws/lambda/scores-highway-prd:*"
+            }
+        ]
+    }
+    ```
+
+1. Install `serverless-plugin-include-dependencies`:
+
+    ```bash
+    npm install serverless-plugin-include-dependencies
+    ```
+
+1. Deploy the AWS Lambda function with the following replacements:
+
+    * `<CB user name>` with your Collegeboard user name
+    * `<CB password>` with your Collegeboard password
+    * `<SFTP user name>` with your SFTP user name
+    * `<SFTP password>` with your SFTP password
+    * `<SFTP host>` with your SFTP host name
+    * `<SFTP path>` with your SFTP destination path
+    * `<Role ARN>` with the ARN of the role previously created
+    * `<Security Group ARN>` with the ARN of the security group for the VPC previously created
+    * `<Subnet ARN>` with the ARN of the private subnet previously created
+
+    ```bash
+    serverless deploy --cb-user-name <CB user name> --cb-password <CB password> --sftp-user-name <SFTP user name> --sftp-password <SFTP password> --sftp-host <SFTP host> --sftp-path <SFTP path> --role-arn <Role ARN> --security-group-id <Security Group ARN> --subnet-id <Subnet ARN>
     ```
 
 ## Notes

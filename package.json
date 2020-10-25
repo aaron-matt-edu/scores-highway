@@ -4,9 +4,7 @@
   "description": "Downloads SAT scores from College Board and uploads them to an SFTP server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf node_modules",
-    "package": "rm -rf bin/ && mkdir bin/ && zip -r bin/scores-highway.zip *.js node_modules"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "aaron.david.matt@gmail.com",
   "license": "Apache-2.0",
@@ -14,5 +12,8 @@
     "fs": "0.0.1-security",
     "https": "^1.0.0",
     "ssh2-sftp-client": "^5.3.1"
+  },
+  "devDependencies": {
+    "serverless-plugin-include-dependencies": "^4.1.0"
   }
 }
