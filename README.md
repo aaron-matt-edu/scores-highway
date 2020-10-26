@@ -8,10 +8,10 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
 
 ## Installation instructions
 
-1. Install NodeJS, [serverless](https://serverless.com), & the [AWS CLI](https://aws.amazon.com/cli/). When setting up the AWS CLI, if using a region other than `us-east-2`, then you'll need to update the `region` in `serverless.yml` as well as elsewhere in this guide.
+1. Install [Git](https://git-scm.com/), NodeJS, [serverless](https://serverless.com), & the [AWS CLI](https://aws.amazon.com/cli/). When setting up the AWS CLI, if using a region other than `us-east-2`, then you'll need to update the `region` in `serverless.yml` as well as elsewhere in this guide.
 1. Create an AWS account.
-1. Create an AWS Elastic IP address.
-1. Create an AWS IAM role with the following policy with the following replacements:
+1. Create an [AWS Elastic IP address](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html).
+1. Create an [AWS IAM role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) with the following policy with the following replacements:
 
     * `<AWS account number>` with your AWS account number
 
@@ -75,7 +75,7 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
     * `<Role ARN>` with the ARN of the role previously created
 
     ```bash
-    npm install serverless-plugin-include-dependencies && serverless deploy --cb-user-name <CB user name> --cb-password <CB password> --sftp-user-name <SFTP user name> --sftp-password <SFTP password> --sftp-host <SFTP host> --sftp-path <SFTP path> --role-arn <Role ARN>
+    npm install serverless-plugin-include-dependencies --save-dev && serverless deploy --cb-user-name <CB user name> --cb-password <CB password> --sftp-user-name <SFTP user name> --sftp-password <SFTP password> --sftp-host <SFTP host> --sftp-path <SFTP path> --role-arn <Role ARN>
     ```
 
 ## Notes
