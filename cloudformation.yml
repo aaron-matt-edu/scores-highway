@@ -2,6 +2,8 @@ AWSTemplateFormatVersion: "2010-09-09"
 Parameters: 
   ElasticIPParameter: 
     Type: String
+  AvailabilityZoneParameter: 
+    Type: String
 Resources:
   ScoresHighwayVPC:
     Type: AWS::EC2::VPC
@@ -16,7 +18,8 @@ Resources:
   ScoresHighwayPrivateSubnet:
     Type: AWS::EC2::Subnet
     Properties: 
-      AvailabilityZone: 'us-east-2a'
+      AvailabilityZone: 
+        Ref: AvailabilityZoneParameter
       CidrBlock: 10.0.16.0/20
       VpcId:
         Ref: ScoresHighwayVPC
@@ -26,7 +29,8 @@ Resources:
   ScoresHighwayPublicSubnet:
     Type: AWS::EC2::Subnet
     Properties: 
-      AvailabilityZone: 'us-east-2a'
+      AvailabilityZone: 
+        Ref: AvailabilityZoneParameter
       CidrBlock: 10.0.0.0/20
       VpcId:
         Ref: ScoresHighwayVPC

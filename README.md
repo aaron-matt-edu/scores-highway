@@ -8,16 +8,17 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
 
 ## Installation instructions
 
-1. Install [Git](https://git-scm.com/), NodeJS, [serverless](https://serverless.com), & the [AWS CLI](https://aws.amazon.com/cli/). When setting up the AWS CLI, if using a region other than `us-east-2`, then you'll need to update the `region` in `serverless.yml` as well as elsewhere in this guide.
+1. Install [Git](https://git-scm.com/), NodeJS, [serverless](https://serverless.com), & the [AWS CLI](https://aws.amazon.com/cli/).
 1. Create an AWS account.
 1. Create an [AWS Elastic IP address](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html).
 
 1. Create the AWS VPC stack with the following replacements:
 
     * `<IP>` with the Elastic IP created earlier (e.g. eipalloc-xxxxxxxx)
+    * `<Availability Zone>` with the desired [AWS Availability Zone](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html) (e.g. us-east-2a)
 
     ```bash
-    aws cloudformation create-stack --stack-name scores-highway-prd-vpc --template-body file://cloudformation.yml --parameters ParamterKey=ElasticIPParameter,ParameterValue=<IP> --capabilities CAPABILITY_NAMED_IAM
+    aws cloudformation create-stack --stack-name scores-highway-prd-vpc --template-body file://cloudformation.yml --parameters ParamterKey=ElasticIPParameter,ParameterValue=<IP> ParameterKey=AvailabilityZoneParameter,ParameterValue=<Availability Zone> --capabilities CAPABILITY_NAMED_IAM
     ```
 
 1. Add the IP address to the whitelist for the SFTP server.
