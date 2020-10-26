@@ -11,50 +11,13 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
 1. Install [Git](https://git-scm.com/), NodeJS, [serverless](https://serverless.com), & the [AWS CLI](https://aws.amazon.com/cli/). When setting up the AWS CLI, if using a region other than `us-east-2`, then you'll need to update the `region` in `serverless.yml` as well as elsewhere in this guide.
 1. Create an AWS account.
 1. Create an [AWS Elastic IP address](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html).
-1. Create an [AWS IAM role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) with the following policy with the following replacements:
-
-    * `<AWS account number>` with your AWS account number
-
-    ```javascript
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": [
-                    "ec2:DescribeNetworkInterfaces",
-                    "ec2:CreateNetworkInterface",
-                    "ec2:DeleteNetworkInterface",
-                    "ec2:DescribeInstances",
-                    "ec2:AttachNetworkInterface"
-                ],
-                "Resource": "*"
-            },
-            {
-                "Sid": "VisualEditor1",
-                "Effect": "Allow",
-                "Action": "logs:CreateLogGroup",
-                "Resource": "arn:aws:logs:us-east-2:<AWS account number>:*"
-            },
-            {
-                "Sid": "VisualEditor2",
-                "Effect": "Allow",
-                "Action": [
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents"
-                ],
-                "Resource": "arn:aws:logs:us-east-2:<AWS account number>:log-group:/aws/lambda/scores-highway-prd:*"
-            }
-        ]
-    }
-    ```
 
 1. Create the AWS VPC stack with the following replacements:
 
-    * `<IP>` with the Elastic IP created earlier (e.g. eip-xxxxxxxx)
+    * `<IP>` with the Elastic IP created earlier (e.g. eipalloc-xxxxxxxx)
 
     ```bash
-    aws cloudformation create-stack --stack-name scores-highway-prd-vpc --template-body file://cloudformation.yml --parameters ParamterKey=ElasticIPParameter,ParameterValue=<IP>
+    aws cloudformation create-stack --stack-name scores-highway-prd-vpc --template-body file://cloudformation.yml --parameters ParamterKey=ElasticIPParameter,ParameterValue=<IP> --capabilities CAPABILITY_NAMED_IAM
     ```
 
 1. Add the IP address to the whitelist for the SFTP server.
@@ -66,18 +29,14 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
 
 1. Deploy the AWS Lambda function with the following replacements:
 
+    * `<AWS Region>` with your desired AWS region
     * `<CB user name>` with your Collegeboard user name
     * `<CB password>` with your Collegeboard password
     * `<SFTP user name>` with your SFTP user name
     * `<SFTP password>` with your SFTP password
     * `<SFTP host>` with your SFTP host name
     * `<SFTP path>` with your SFTP destination path
-    * `<Role ARN>` with the ARN of the role previously created
 
     ```bash
-    npm install serverless-plugin-include-dependencies --save-dev && serverless deploy --cb-user-name <CB user name> --cb-password <CB password> --sftp-user-name <SFTP user name> --sftp-password <SFTP password> --sftp-host <SFTP host> --sftp-path <SFTP path> --role-arn <Role ARN>
+    npm install serverless-plugin-include-dependencies --save-dev && serverless deploy --region <AWS region> --cb-user-name <CB user name> --cb-password <CB password> --sftp-user-name <SFTP user name> --sftp-password <SFTP password> --sftp-host <SFTP host> --sftp-path <SFTP path>
     ```
-
-## Notes
-
-This is merely a 1.0.0 version of the function. There is a small backlog of enhancements, code clean-up, & automation coming to make the lengthy installation instructions much easier.

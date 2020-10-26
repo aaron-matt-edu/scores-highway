@@ -116,6 +116,43 @@ Resources:
           Value: scores-highway-security-group
       VpcId: 
         Ref: ScoresHighwayVPC
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /service-role/
+      Policies: 
+        - PolicyName: scores-highway-lambda-execution-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeInstances
+                  - ec2:AttachNetworkInterface
+                Resource: "*"
+              - Sid: VisualEditor1
+                Effect: Allow
+                Action: logs:CreateLogGroup
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*'
+              - Sid: VisualEditor2
+                Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/scores-highway-prd:*'
+      RoleName: scores-highway-lambda-execution-role
 Outputs:
   ScoresHighwayPrivateSubnetOutput:
     Value: 
@@ -127,3 +164,8 @@ Outputs:
       Ref: ScoresHighwaySecurityGroup
     Export:
       Name: security-group-id
+  ScoresHighwayLambdaExecutionRole:
+    Value: 
+      !GetAtt LambdaExecutionRole.Arn
+    Export:
+      Name: lambda-exec-role

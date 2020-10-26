@@ -3,14 +3,14 @@ service: scores-highway
 provider:
   name: aws
   stage: prd
-  region: us-east-2
+  region: ${opt:region}
 
 functions:
   scores-highway:
     name: scores-highway-${self:provider.stage}
     runtime: nodejs12.x
     handler: index.handler
-    role: ${opt:role-arn}
+    role: ${cf:scores-highway-prd-vpc.ScoresHighwayLambdaExecutionRole}
     environment:
       CB_PASSWORD: ${opt:cb-password}
       CB_USER_NAME: ${opt:cb-user-name}
