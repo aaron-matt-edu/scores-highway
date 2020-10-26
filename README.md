@@ -9,9 +9,15 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
 ## Installation instructions
 
 1. Install [Git](https://git-scm.com/), NodeJS, [serverless](https://serverless.com), & the [AWS CLI](https://aws.amazon.com/cli/).
+1. Clone this repository.
+
+    ```bash
+    git clone https://github.com/aaron-matt-edu/scores-highway.git
+    ```
+
 1. Create an AWS account.
 1. Create an [AWS Elastic IP address](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html).
-
+1. Add the IP address to the whitelist for the SFTP server.
 1. Create the AWS VPC stack with the following replacements:
 
     * `<IP>` with the Elastic IP created earlier (e.g. eipalloc-xxxxxxxx)
@@ -19,13 +25,6 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
 
     ```bash
     aws cloudformation create-stack --stack-name scores-highway-prd-vpc --template-body file://cloudformation.yml --parameters ParamterKey=ElasticIPParameter,ParameterValue=<IP> ParameterKey=AvailabilityZoneParameter,ParameterValue=<Availability Zone> --capabilities CAPABILITY_NAMED_IAM
-    ```
-
-1. Add the IP address to the whitelist for the SFTP server.
-1. Clone this repository.
-
-    ```bash
-    git clone https://github.com/aaron-matt-edu/scores-highway.git
     ```
 
 1. Deploy the AWS Lambda function with the following replacements:
