@@ -1,0 +1,129 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters: 
+  ElasticIPParameter: 
+    Type: String
+Resources:
+  ScoresHighwayVPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: false
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: scores-highway-vpc
+  ScoresHighwayPrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: 'us-east-2a'
+      CidrBlock: 10.0.16.0/20
+      VpcId:
+        Ref: ScoresHighwayVPC
+      Tags:
+        - Key: Name
+          Value: scores-highway-private-subnet
+  ScoresHighwayPublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: 'us-east-2a'
+      CidrBlock: 10.0.0.0/20
+      VpcId:
+        Ref: ScoresHighwayVPC
+      Tags:
+        - Key: Name
+          Value: scores-highway-public-subnet
+  ScoresHighwayIGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: scores-highway-igw
+  ScoresHighwayIGWAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId:
+        Ref: ScoresHighwayIGW
+      VpcId:
+        Ref: ScoresHighwayVPC
+  ScoresHighwayNATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties: 
+      AllocationId: 
+        Ref: ElasticIPParameter
+      SubnetId:
+        Ref: ScoresHighwayPublicSubnet
+      Tags: 
+        - Key: Name
+          Value: scores-highway-nat-gateway
+  ScoresHighwayPublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: scores-highway-public-route-table
+      VpcId:
+        Ref: ScoresHighwayVPC
+  ScoresHighwayPrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: scores-highway-private-route-table
+      VpcId:
+        Ref: ScoresHighwayVPC
+  ScoresHighwayPublicRoute:
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: ScoresHighwayIGW
+      RouteTableId:
+        Ref: ScoresHighwayPublicRouteTable
+  ScoresHighwayPrivateRoute:
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: ScoresHighwayNATGateway
+      RouteTableId:
+        Ref: ScoresHighwayPrivateRouteTable
+  ScoresHighwayPrivateSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: 
+        Ref: ScoresHighwayPrivateRouteTable
+      SubnetId: 
+        Ref: ScoresHighwayPrivateSubnet
+  ScoresHighwayPublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: 
+        Ref: ScoresHighwayPublicRouteTable
+      SubnetId: 
+        Ref: ScoresHighwayPublicSubnet
+  ScoresHighwaySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: scores-highway-security-group
+      SecurityGroupEgress: 
+        - CidrIp: 0.0.0.0/0
+          FromPort: -1
+          IpProtocol: -1
+          ToPort: -1
+      Tags: 
+        - Key: Name
+          Value: scores-highway-security-group
+      VpcId: 
+        Ref: ScoresHighwayVPC
+Outputs:
+  ScoresHighwayPrivateSubnetOutput:
+    Value: 
+      Ref: ScoresHighwayPrivateSubnet
+    Export:
+      Name: subnet-id
+  ScoresHighwaySecurityGroupOutput:
+    Value: 
+      Ref: ScoresHighwaySecurityGroup
+    Export:
+      Name: security-group-id

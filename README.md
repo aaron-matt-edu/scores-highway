@@ -8,16 +8,9 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
 
 ## Installation instructions
 
-1. Create an AWS account.
-1. [Create an AWS VPC with a static public IP address](https://medium.com/@karan.brar/aws-lambda-with-static-ip-address-c82e3043c2ed) (follow the linked guide except for the part that creates the AWS Lambda function).
-1. Add the IP address to the whitelist for the SFTP server.
 1. Install NodeJS, [serverless](https://serverless.com), & the [AWS CLI](https://aws.amazon.com/cli/). When setting up the AWS CLI, if using a region other than `us-east-2`, then you'll need to update the `region` in `serverless.yml` as well as elsewhere in this guide.
-1. Clone this repository.
-
-    ```bash
-    git clone https://github.com/aaron-matt-edu/scores-highway.git
-    ```
-
+1. Create an AWS account.
+1. Create an AWS Elastic IP address.
 1. Create an AWS IAM role with the following policy with the following replacements:
 
     * `<AWS account number>` with your AWS account number
@@ -56,10 +49,19 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
     }
     ```
 
-1. Install `serverless-plugin-include-dependencies`:
+1. Create the AWS VPC stack with the following replacements:
+
+    * `<IP>` with the Elastic IP created earlier (e.g. eip-xxxxxxxx)
 
     ```bash
-    npm install serverless-plugin-include-dependencies
+    aws cloudformation create-stack --stack-name scores-highway-prd-vpc --template-body file://cloudformation.yml --parameters ParamterKey=ElasticIPParameter,ParameterValue=<IP>
+    ```
+
+1. Add the IP address to the whitelist for the SFTP server.
+1. Clone this repository.
+
+    ```bash
+    git clone https://github.com/aaron-matt-edu/scores-highway.git
     ```
 
 1. Deploy the AWS Lambda function with the following replacements:
@@ -71,11 +73,9 @@ This function was adapted from a script originally developed by [Tim Heuer](mail
     * `<SFTP host>` with your SFTP host name
     * `<SFTP path>` with your SFTP destination path
     * `<Role ARN>` with the ARN of the role previously created
-    * `<Security Group ARN>` with the ARN of the security group for the VPC previously created
-    * `<Subnet ARN>` with the ARN of the private subnet previously created
 
     ```bash
-    serverless deploy --cb-user-name <CB user name> --cb-password <CB password> --sftp-user-name <SFTP user name> --sftp-password <SFTP password> --sftp-host <SFTP host> --sftp-path <SFTP path> --role-arn <Role ARN> --security-group-id <Security Group ARN> --subnet-id <Subnet ARN>
+    npm install serverless-plugin-include-dependencies && serverless deploy --cb-user-name <CB user name> --cb-password <CB password> --sftp-user-name <SFTP user name> --sftp-password <SFTP password> --sftp-host <SFTP host> --sftp-path <SFTP path> --role-arn <Role ARN>
     ```
 
 ## Notes

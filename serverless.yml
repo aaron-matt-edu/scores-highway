@@ -27,9 +27,9 @@ functions:
     timeout: 600
     vpc:
       securityGroupIds:
-        - ${opt:security-group-id}
+        - ${cf:scores-highway-prd-vpc.ScoresHighwaySecurityGroupOutput}
       subnetIds:
-        - ${opt:subnet-id}
+        - ${cf:scores-highway-prd-vpc.ScoresHighwayPrivateSubnetOutput}
 
 plugins:
   - serverless-plugin-include-dependencies
