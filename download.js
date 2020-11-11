@@ -25,9 +25,9 @@ function collegeBoardOptionsFor(urlPath) {
     };
 }
 
-function formattedDateFromOneDayAgo() {
+function formattedDateFrom(daysAgo) {
     let formattedDate = new Date();
-    formattedDate.setDate(formattedDate.getDate() - 1);
+    formattedDate.setDate(formattedDate.getDate() - daysAgo);
     formattedDate = formattedDate.toISOString().split('.')[0] + "-0000"
 
     return formattedDate;
@@ -102,12 +102,12 @@ exports.downloadToLocal = function(url, filePath) {
     });
 }
 
-exports.getFileNamesToDownload = function() {
+exports.getFileNamesToDownload = function(daysAgo) {
     return new Promise(function(resolve, reject) {
         const logger = new Logger('getDownloadUrl');
         let fileNames = [];
     
-        const options = collegeBoardOptionsFor('/pascoredwnld/files/list?fromDate=' + formattedDateFromOneDayAgo());    
+        const options = collegeBoardOptionsFor('/pascoredwnld/files/list?fromDate=' + formattedDateFrom(daysAgo));    
         const request = https.request(options,
             function(response) {    
                 let body = "";

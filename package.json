@@ -1,6 +1,6 @@
 {
   "name": "scores-highway",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "Downloads SAT scores from College Board and uploads them to an SFTP server",
   "main": "index.js",
   "scripts": {

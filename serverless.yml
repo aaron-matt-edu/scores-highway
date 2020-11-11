@@ -19,11 +19,13 @@ functions:
       SFTP_PATH: ${opt:sftp-path}
       SFTP_USER_NAME: ${opt:sftp-user-name}
     tags:
-      version: 1.4.0
+      version: 1.5.0
     events:
       - schedule:
           rate: cron(0 12 * * ? *)
           enabled: true
+          input:
+            daysAgo: 1
     timeout: 600
     vpc:
       securityGroupIds:

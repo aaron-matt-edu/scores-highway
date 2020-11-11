@@ -5,7 +5,7 @@ const downloadFunctions = require('./download');
 exports.handler = async function(event, context, callback) {
     const logger = new Logger('lambdaHandler');
 
-    const fileNames = await downloadFunctions.getFileNamesToDownload();
+    const fileNames = await downloadFunctions.getFileNamesToDownload(event.daysAgo);
     logger.info('File names to download: ' + fileNames);
 
     const filesToDownload = [];
